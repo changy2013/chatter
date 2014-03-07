@@ -1,11 +1,18 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{ title }}</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1>{{ title }}</h1>
-    <p>Welcome to {{ title }}</p>
-  </body>
-</html>
+{{> header}}
+{{> navbar}}
+
+<div class="container full-height">
+  <div class="row full-height">
+    <div class="col-sm-9 full-height">
+      <div id="message-container"></div>
+      <div id="input-container">
+        <form>
+          <textarea class="form-control" id="input" rows="2" placeholder="Type something penis and press funny"></textarea>
+        </form>
+      </div>
+    </div>
+    <div class="col-sm-3 hidden-xs" id="user-container"></div>
+  </div>
+</div>
+
+{{> footer}}

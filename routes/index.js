@@ -4,5 +4,11 @@
  */
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Express' });
+  res.render('index', {
+    partials: {
+      header: '_header',
+      navbar: '_navbar',
+      footer: '_footer',
+    },
+  });
 };

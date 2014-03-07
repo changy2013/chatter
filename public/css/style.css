@@ -1,0 +1,271 @@
+/*================================================================================================= GLOBAL */
+
+body {
+  /* navbar height (50) + navbar border-bottom-height (1) + spacing at bottom (4) */
+  padding-top: 55px;
+  font-family: "Open Sans", sans-serif;
+}
+
+html,
+body,
+.full-height {
+  height: 100%;
+}
+
+.container {
+  width: auto;
+}
+
+/*================================================================================================= NAVBAR */
+
+.navbar {
+  box-shadow: 0 0 9px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .navbar-text {
+  /* was set to 15px in Bootstrap and moved the title too much to the right */
+  margin-left: 0;
+}
+
+/* tag containing mobile-only title */
+.navbar li span {
+  display: block;
+  padding: 10px 15px;
+  color: #777;
+}
+
+.navbar img {
+  width: 32px;
+}
+
+.navbar small {
+  float: right;
+  margin-top: 6px;
+}
+
+/* mobile-only divider */
+.navbar .divider-mobile {
+  height: 1px;
+  margin: 9px 0 4px 0;
+  overflow: hidden;
+  background-color: #e5e5e5;
+}
+
+@media (min-width: 768px) {
+
+  .navbar .navbar-right:last-child {
+    /* was set to -15px in Bootstrap and moved the .navbar-right too much to the right */
+    margin-right: 0;
+  }
+
+}
+
+/*================================================================================================= MESSAGES */
+
+#message-container {
+  /* input-container margin-top (4) + input-container height (54) + spacing at bottom (17) */
+  height: calc(100% - 75px);
+  overflow-y: scroll;
+}
+
+.message {
+  margin-right: 10px;
+  padding: 6px 0;
+  border-top: 1px solid #e7e7e7;
+}
+
+.message:first-child {
+  border-top: 0;
+}
+
+/*=============================================== HEADER */
+
+.message .header img {
+  width: 32px;
+}
+
+.message .header small {
+  float: right;
+  margin: 7px 10px 0 0;
+  color: #aeaeae;
+}
+
+/*=============================================== TEXT */
+
+.message .text {
+  margin-left: 36px;
+  /* allows links to be broken down along multiple lines and prevents horizontal scrolling on small screens */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.message .text p {
+  margin: 0 0 5px 0;
+}
+
+.message .text .mention {
+  padding: 4px 7px;
+  background-color: rgba(255, 255, 0, 0.3);
+  border: 1px solid rgba(230, 230, 0, 0.5);
+  border-radius: 4px;
+}
+
+.message .text blockquote {
+  margin: 0 0 15px 6px;
+  padding: 15px 10px;
+  font-size: 1em;
+  font-style: italic;
+  color: #999;
+}
+
+.message .text img {
+  max-height: 200px;
+}
+
+.message .text .smiley {
+  vertical-align: -3px;
+}
+
+.system-message {
+  padding-bottom: 8px;
+  font-style: italic;
+  color: #aeaeae;
+}
+
+/*=============================================== MEDIA */
+
+.message .text .media {
+  margin: 0 0 5px 0;
+}
+
+.message .text .media div {
+  display: inline-block;
+}
+
+.message .text .media img {
+  vertical-align: top;
+}
+
+.message .text .media .close {
+  float: none;
+  padding: 0 2px;
+  font-size: 14px;
+}
+
+/*=============================================== MEME */
+
+.meme {
+  position: relative;
+  height: 200px;
+}
+
+.meme div {
+  position: absolute;
+  font-family: Impact, Charcoal, sans-serif;
+  font-size: 20px;
+  text-align: center;
+  text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 5px #000, 0 0 5px #000;
+  color: #fff;
+  z-index: 666;
+}
+
+.meme .top {
+  top: 0;
+  left: 0;
+}
+
+.meme .bottom {
+  bottom: 0;
+  left: 0;
+}
+
+.meme img {
+  height: 200px;
+}
+
+/*================================================================================================= INPUT */
+
+#input-container {
+  margin-top: 4px;
+}
+
+#input {
+  height: 54px;
+  padding-left: 8px;
+}
+
+/*================================================================================================= USERS */
+
+#user-container {
+  padding: 8px 0 0 0;
+}
+
+.user {
+  margin-bottom: 8px;
+  /* prevents text from wrapping on small screens */
+  white-space: nowrap;
+  /* prevents horizontal scrolling on small screens */
+  overflow: hidden;
+}
+
+.user img {
+  float: left;
+  width: 32px;
+  margin-right: 5px;
+}
+
+.user p {
+  margin: 0;
+  line-height: 16px;
+}
+
+/*================================================================================================= SCROLLBARS */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  overflow: visible;
+}
+
+::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+}
+
+::-webkit-scrollbar-track {
+  border: solid transparent;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-track:hover {
+  background-color: rgba(0,0,0,.05);
+}
+
+::-webkit-scrollbar-track:active {
+  background-color: rgba(0,0,0,.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,.15);
+  border: solid transparent;
+  min-height: 28px;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0,0,0,.25);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: rgba(0,0,0,0.35);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/*================================================================================================= SECTION */
+
+
+
+/*================================================================================================= END */
