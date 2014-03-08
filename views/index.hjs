@@ -4,7 +4,15 @@
 <div class="container full-height">
   <div class="row full-height">
     <div class="col-sm-9 full-height">
-      <div id="message-container"></div>
+      <div id="message-container">
+
+
+        <a class="btn btn-primary" href="/auth/facebook">Log in with Facebook</a>
+        <a class="btn btn-danger" href="/logout">Log out</a>
+        <h3>Hello, {{user.name}}</h3>
+
+
+      </div>
       <div id="input-container">
         <form>
           <textarea class="form-control" id="input" rows="2" placeholder="Type something penis and press funny"></textarea>
