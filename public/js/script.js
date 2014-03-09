@@ -98,6 +98,34 @@ if (window.io) {
     </div>\
   ');
 
+
+  var smileyTemplate = Handlebars.compile('\
+    <img class="smiley" src="{{url}}" title="{{code}}">\
+  ');
+
+
+
+
+  function smileyfy(text) {
+    for (var i = 0; i < smileys.length; i++) {
+      var pos = text.indexOf(smileys[i].code);
+      if (pos != -1) {
+        return smileyfy(text.substring(0, pos)) +
+          smileyTemplate(smileys[i]) +
+          smileyfy(text.substring(pos + smileys[i].code.length, text.length));
+      }
+    }
+    return text;
+  }
+
+
+
+
+
+
+
+
+
   socket.on('connect', function() {
     // console.log('Socket.io connected');
   });
@@ -163,6 +191,9 @@ if (window.io) {
       }
       data.text = memeTemplate(memeData);
     }
+
+
+    data.text = smileyfy(data.text);
 
 
     messageContainer.append(messageTemplate(data));
