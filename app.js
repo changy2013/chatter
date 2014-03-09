@@ -13,8 +13,8 @@ var User = require('./models/user');
 
 //================================================================================================= PASSPORT
 
-var passport = require('passport');
-var FacebookStrategy = require('passport-facebook').Strategy;
+var passport = require('./auth').passport;
+var ensureAuthenticated = require('./auth').ensureAuthenticated;
 
 //================================================================================================= EXPRESS
 
@@ -52,73 +52,6 @@ app.use(passport.session());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
-//================================================================================================= MONGODB + PASSPORT
-
-var db = new Db(config.mongodb.database,
-                new Server(config.mongodb.host, config.mongodb.port),
-                {native_parser: true, w: 1});
-
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
-
-passport.deserializeUser(function(id, done) {
-  User.find(id, function(err, user) {
-    done(err, user);
-  });
-});
-
-passport.use(new FacebookStrategy({
-    clientID: config.facebook.appId,
-    clientSecret: config.facebook.appSecret,
-    callbackURL: config.app.host +
-                  ':' + Number(config.app.port).toString() +
-                  '/auth/facebook/callback'
-  },
-  function(accessToken, refreshToken, profile, done) {
-    User.find(profile.id, function(err, user) {
-      if (err) { return done(err); }
-      if (user !== null) {
-        if (user.whitelisted) {
-          done(null, user);
-        } else {
-          done(null, false);
-        }
-      } else {
-        User.count(function(err, count) {
-          if (err) { return done(err); }
-          var user = {
-            id: profile.id,
-            name: profile.displayName,
-            whitelisted: false,
-          };
-          if (count === 0) {
-            user.whitelisted = true;
-            user.whitelistedBy = 'God';
-            User.insert(user, function(err, result) {
-              if (err) { return done(err); }
-              done(null, result[0]);
-            });
-          } else {
-            User.insert(user, function(err, result) {
-              if (err) { return done(err); }
-              done(null, false);
-            });
-          }
-        });
-      }
-    });
-  }
-));
-
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  } else {
-    res.redirect('/login');
-  }
-}
-
 //================================================================================================= ROUTES
 
 app.get('/auth/facebook', passport.authenticate('facebook'));
@@ -139,6 +72,9 @@ app.get('/not-whitelisted', routes.notWhitelisted);
 
 //================================================================================================= START APP
 
+var db = new Db(config.mongodb.database,
+                new Server(config.mongodb.host, config.mongodb.port),
+                {native_parser: true, w: 1});
 db.open(function(err, db) {
   if (err) { throw err; }
   User.init(db);
