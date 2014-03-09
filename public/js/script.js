@@ -189,6 +189,11 @@ if (window.io) {
     data.text = data.text.replace(newlinePattern, '<br>');
 
 
+    if (data.text.indexOf('/meme') != 0) {
+      data.text = urlify(data.text);
+      data.text = smileyfy(data.text);
+    }
+
 
     if (data.text.indexOf('/quote') == 0) {
       data.text = data.text.replace('/quote', '');
@@ -208,10 +213,6 @@ if (window.io) {
 
 
 
-    if (data.text.indexOf('/meme') != 0) {
-      data.text = urlify(data.text);
-      data.text = smileyfy(data.text);
-    }
 
     messageContainer.append(messageTemplate(data));
     scroll();
