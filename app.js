@@ -16,15 +16,30 @@ var User = require('./models/user');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 
-//================================================================================================= CONFIG + APP
+//================================================================================================= EXPRESS
 
-var config = require('./config');
 var app = express();
 
+//================================================================================================= SOCKET.IO
+
+var server = require('http').createServer(app);
+var io = require('socket.io').listen(server);
+
+io.set('log level', 1);
+
+io.sockets.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
+});
+
+//================================================================================================= CONFIG
+
+var config = require('./config');
 app.set('port', config.app.port);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hjs');
-
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
@@ -32,10 +47,8 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 app.use(express.session());
-
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -129,7 +142,7 @@ app.get('/not-whitelisted', routes.notWhitelisted);
 db.open(function(err, db) {
   if (err) { throw err; }
   User.init(db);
-  http.createServer(app).listen(app.get('port'), function() {
+  server.listen(app.get('port'), function() {
     console.log('Express server listening on port ' + app.get('port'));
   });
 });
