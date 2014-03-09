@@ -26,10 +26,12 @@ if (window.io) {
   var messageContainer = $('#message-container');
   var input = $('#input');
   var hasFocus = true;
+  input.focus();
 
 
   $(window).focus(function() {
     hasFocus = true;
+    input.focus();
   });
   $(window).blur(function() {
     hasFocus = false;
