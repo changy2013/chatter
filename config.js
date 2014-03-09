@@ -2,6 +2,7 @@ var config = {
   app: {
     host: 'http://localhost',
     port: 3000,
+    secret: 'Super Secret Secret Squirrel',
   },
   mongodb: {
     host: 'localhost',

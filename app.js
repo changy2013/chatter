@@ -27,6 +27,33 @@ var io = require('socket.io').listen(server);
 
 io.set('log level', 1);
 
+io.configure(function () {
+  io.set('authorization', function (handshakeData, callback) {
+    if (handshakeData.headers.cookie) {
+      cookieParser(handshakeData, {}, function(err) {
+        if (err) { return console.error('Error parsing cookie:', err); }
+        handshakeData.sessionID = handshakeData.signedCookies['app.sid'];
+        sessionStore.get(handshakeData.sessionID, function(err, session) {
+          if (err) {
+            callback('Error retrieving session data', false);
+          } else if (!session) {
+            callback('No session data found', false);
+          } else {
+            handshakeData.session = session;
+            if (handshakeData.session.passport.user) {
+              callback(null, true);
+            } else {
+              callback('Unauthenticated user attempting to connect', false);
+            }
+          }
+        });
+      });
+    } else {
+      callback('No cookie received', false);
+    }
+  });
+});
+
 io.sockets.on('connection', function (socket) {
   socket.emit('news', { hello: 'world' });
   socket.on('my other event', function (data) {
@@ -37,6 +64,8 @@ io.sockets.on('connection', function (socket) {
 //================================================================================================= CONFIG
 
 var config = require('./config');
+var sessionStore = new express.session.MemoryStore();
+var cookieParser = express.cookieParser(config.app.secret);
 app.set('port', config.app.port);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hjs');
@@ -45,8 +74,8 @@ app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
-app.use(express.cookieParser('your secret here'));
-app.use(express.session());
+app.use(cookieParser);
+app.use(express.session({ key: 'app.sid', store: sessionStore }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(app.router);
