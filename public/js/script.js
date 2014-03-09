@@ -26,17 +26,20 @@ if (window.io) {
   var messageContainer = $('#message-container');
   var input = $('#input');
   var hasFocus = true;
+  var title = document.title;
+  var unreadMessages = 0;
   input.focus();
 
 
   $(window).focus(function() {
     hasFocus = true;
+    unreadMessages = 0;
+    document.title = title;
     input.focus();
   });
   $(window).blur(function() {
     hasFocus = false;
   });
-
 
   var urlPattern = new RegExp('(ftp|https?)://[^ "]+$', 'ig');
   var newlinePattern = new RegExp('\n', 'ig');
@@ -44,6 +47,8 @@ if (window.io) {
 
   function scroll() {
     if (!hasFocus) {
+      unreadMessages += 1;
+      document.title = '(' + unreadMessages + ') ' + title;
       return;
     }
     messageContainer.scrollTop(messageContainer.prop('scrollHeight'));
