@@ -21,48 +21,6 @@ $(function() {
 
 if (window.io) {
 
-  var socket = io.connect('/');
-
-  var messageContainer = $('#message-container');
-  var input = $('#input');
-  var hasFocus = true;
-  var title = document.title;
-  var unreadMessages = 0;
-  input.focus();
-
-
-  $(window).focus(function() {
-    hasFocus = true;
-    unreadMessages = 0;
-    document.title = title;
-    input.focus();
-  });
-  $(window).blur(function() {
-    hasFocus = false;
-  });
-
-  var urlPattern = new RegExp('(ftp|https?)://[^ "]+$', 'ig');
-  var newlinePattern = new RegExp('\n', 'ig');
-  var whitespaceQuotesPattern = new RegExp('(?:[^\\s"]+|"[^"]*")+', 'ig');
-
-  function scroll() {
-    if (!hasFocus) {
-      unreadMessages += 1;
-      document.title = '(' + unreadMessages + ') ' + title;
-      return;
-    }
-    messageContainer.scrollTop(messageContainer.prop('scrollHeight'));
-  }
-
-  function stripQuotes(str) {
-    if (str[0] == '"') {
-      str = str.substring(1);
-    }
-    if (str[str.length - 1] == '"') {
-      str = str.substring(0, str.length - 1);
-    }
-    return str;
-  }
 
   var systemMessageTemplate = Handlebars.compile('\
     <div class="system-message">{{text}}</div>\
@@ -97,14 +55,71 @@ if (window.io) {
       <span class="glyphicon glyphicon-remove close"></span>\
     </div>\
   ');
-
-
   var smileyTemplate = Handlebars.compile('\
     <img class="smiley" src="{{url}}" title="{{code}}">\
   ');
 
 
 
+
+
+
+  var socket = io.connect('/');
+
+  var messageContainer = $('#message-container');
+  var input = $('#input');
+  var hasFocus = true;
+  var title = document.title;
+  var unreadMessages = 0;
+  input.focus();
+
+
+  $(window).focus(function() {
+    hasFocus = true;
+    unreadMessages = 0;
+    document.title = title;
+    input.focus();
+  });
+  $(window).blur(function() {
+    hasFocus = false;
+  });
+
+  var urlPattern = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
+  // var urlPattern = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/ig;
+  // var urlPattern = new RegExp('(http|ftp|https)://[a-z0-9\-_]+(\.[a-z0-9\-_]+)+([a-z0-9\-\.,@\?^=%&;:/~\+#]*[a-z0-9\-@\?^=%&;/~\+#])?', 'i');
+
+
+
+  // Here is some example test with URLs from mattheworiordan.com. Any of the URLs which are prefixed with www. should become URLs such as www.mattheworiordan.com/path_name.html And an explicit URL such as http://www.mattheworiordan.com/ should become a URL. Emails such as matt@google.com should become links to. Or email mailto links such as mailto:matt@google.com should become links to. And of course lets not forget querstryings such as http://mattheworiordan.com/?test-param=true_or_false and paths and anchors such as www.mattheworiordan.com/home#index
+
+
+
+
+  var whitespaceQuotesPattern = /(?:[^\s"]+|"[^"]*")+/g;
+  var newlinePattern = /\n/g;
+
+  function scroll() {
+    if (!hasFocus) {
+      unreadMessages += 1;
+      document.title = '(' + unreadMessages + ') ' + title;
+      return;
+    }
+    messageContainer.scrollTop(messageContainer.prop('scrollHeight'));
+  }
+
+  function stripQuotes(str) {
+    if (str[0] == '"') {
+      str = str.substring(1);
+    }
+    if (str[str.length - 1] == '"') {
+      str = str.substring(0, str.length - 1);
+    }
+    return str;
+  }
+
+  function urlify(text) {
+    return text.replace(urlPattern, '<a href="$1" target="_blank">$1</a>');
+  }
 
   function smileyfy(text) {
     for (var i = 0; i < smileys.length; i++) {
@@ -183,18 +198,20 @@ if (window.io) {
 
     if (data.text.indexOf('/meme') == 0) {
       var tokens = data.text.match(whitespaceQuotesPattern);
-      tokens[3] = tokens[3] || '';
       var memeData = {
         pic: tokens[1],
-        top: stripQuotes(tokens[2]).toUpperCase(),
-        bottom: stripQuotes(tokens[3]).toUpperCase(),
+        top: stripQuotes(tokens[2] || '').toUpperCase(),
+        bottom: stripQuotes(tokens[3] || '').toUpperCase(),
       }
       data.text = memeTemplate(memeData);
     }
 
 
-    data.text = smileyfy(data.text);
 
+    if (data.text.indexOf('/meme') != 0) {
+      data.text = urlify(data.text);
+      data.text = smileyfy(data.text);
+    }
 
     messageContainer.append(messageTemplate(data));
     scroll();
