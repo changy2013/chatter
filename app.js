@@ -2,7 +2,6 @@
 
 var express = require('express');
 var routes = require('./routes');
-var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 
@@ -87,7 +86,7 @@ function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   } else {
-    res.redirect('/you-need-to-log-in');
+    res.redirect('/login');
   }
 }
 
@@ -105,11 +104,9 @@ app.get('/logout', function(req, res) {
   res.redirect('/');
 });
 
-app.get('/', routes.index);
+app.get('/', ensureAuthenticated, routes.index);
 
-app.get('/users', user.list);
-
-// app.get('/users', ensureAuthenticated, user.list);
+app.get('/login', routes.login);
 
 //================================================================================================= START APP
 

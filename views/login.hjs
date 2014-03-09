@@ -1,0 +1,11 @@
+{{> header}}
+
+<div class="container text-center">
+  <h2>welcome to chatter ;)</h2>
+  <br>
+  <p>
+    <a class="btn btn-primary" href="/auth/facebook">Log in with Facebook</a>
+  </p>
+</div>
+
+{{> footer}}
