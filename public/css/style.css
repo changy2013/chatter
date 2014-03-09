@@ -248,7 +248,7 @@ body,
 ::-webkit-scrollbar-thumb {
   background-color: rgba(0,0,0,.15);
   border: solid transparent;
-  min-height: 28px;
+  min-height: 60px;
   border-radius: 2px;
 }
 

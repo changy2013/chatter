@@ -27,8 +27,8 @@ var io = require('socket.io').listen(server);
 
 io.set('log level', 1);
 
-io.configure(function () {
-  io.set('authorization', function (handshakeData, callback) {
+io.configure(function() {
+  io.set('authorization', function(handshakeData, callback) {
     if (handshakeData.headers.cookie) {
       cookieParser(handshakeData, {}, function(err) {
         if (err) { return console.error('Error parsing cookie:', err); }
@@ -54,11 +54,28 @@ io.configure(function () {
   });
 });
 
-io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
+io.sockets.on('connection', function(socket) {
+
+  io.sockets.emit('system-message', { text: socket.handshake.session.passport.user.name + ' connected' });
+
+  socket.on('disconnect', function() {
+    io.sockets.emit('system-message', { text: socket.handshake.session.passport.user.name + ' disconnected' });
   });
+
+  socket.on('message', function(data) {
+    var message = {
+      user: {
+        id: socket.handshake.session.passport.user.id,
+        name: socket.handshake.session.passport.user.name,
+      },
+      timestamp: new Date(),
+      // TODO: pls sanitize this i.e. script tags
+      text: data,
+    };
+    io.sockets.emit('message', message);
+    // TODO: save message to mongoDB
+  });
+
 });
 
 //================================================================================================= CONFIG
