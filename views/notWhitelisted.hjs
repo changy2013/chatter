@@ -1,0 +1,10 @@
+{{> header}}
+
+<div class="container text-center">
+  <h2>is this your first time? :p</h2>
+  <br>
+  <p>your request to join the chatroom has been sent</p>
+  <p>please ask one of the existing users to whitelist you and then <a href="/">try again</a></p>
+</div>
+
+{{> footer}}

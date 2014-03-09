@@ -17,3 +17,12 @@ exports.login = function(req, res){
     },
   });
 };
+
+exports.notWhitelisted = function(req, res){
+  res.render('notWhitelisted', {
+    partials: {
+      header: '_header',
+      footer: '_footer',
+    },
+  });
+};

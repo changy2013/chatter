@@ -66,16 +66,32 @@ passport.use(new FacebookStrategy({
     User.find(profile.id, function(err, user) {
       if (err) { return done(err); }
       if (user !== null) {
-        done(null, user);
+        if (user.whitelisted) {
+          done(null, user);
+        } else {
+          done(null, false);
+        }
       } else {
-        var user = {
-          id: profile.id,
-          name: profile.displayName,
-          whitelisted: false,
-        };
-        User.insert(user, function(err, result) {
+        User.count(function(err, count) {
           if (err) { return done(err); }
-          done(null, result[0]);
+          var user = {
+            id: profile.id,
+            name: profile.displayName,
+            whitelisted: false,
+          };
+          if (count === 0) {
+            user.whitelisted = true;
+            user.whitelistedBy = 'God';
+            User.insert(user, function(err, result) {
+              if (err) { return done(err); }
+              done(null, result[0]);
+            });
+          } else {
+            User.insert(user, function(err, result) {
+              if (err) { return done(err); }
+              done(null, false);
+            });
+          }
         });
       }
     });
@@ -96,7 +112,7 @@ app.get('/auth/facebook', passport.authenticate('facebook'));
 
 app.get('/auth/facebook/callback', passport.authenticate('facebook', {
   successRedirect: '/',
-  failureRedirect: '/login'
+  failureRedirect: '/not-whitelisted'
 }));
 
 app.get('/logout', function(req, res) {
@@ -105,8 +121,8 @@ app.get('/logout', function(req, res) {
 });
 
 app.get('/', ensureAuthenticated, routes.index);
-
 app.get('/login', routes.login);
+app.get('/not-whitelisted', routes.notWhitelisted);
 
 //================================================================================================= START APP
 
