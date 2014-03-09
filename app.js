@@ -64,10 +64,7 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('message', function(data) {
     var message = {
-      user: {
-        id: socket.handshake.session.passport.user.id,
-        name: socket.handshake.session.passport.user.name,
-      },
+      user: socket.handshake.session.passport.user,
       timestamp: new Date(),
       // TODO: pls sanitize this i.e. script tags
       text: data,

@@ -26,6 +26,7 @@ passport.use(new FacebookStrategy({
           var user = {
             id: profile.id,
             name: profile.displayName,
+            pic: 'https://graph.facebook.com/' + profile.id + '/picture',
             whitelisted: false,
           };
           if (count === 0) {
@@ -48,7 +49,7 @@ passport.use(new FacebookStrategy({
 ));
 
 passport.serializeUser(function(user, done) {
-  done(null, { id: user.id, name: user.name });
+  done(null, { id: user.id, name: user.name, pic: user.pic });
 });
 
 passport.deserializeUser(function(user, done) {

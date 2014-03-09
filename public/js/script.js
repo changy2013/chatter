@@ -63,7 +63,7 @@ if (window.io) {
   var messageTemplate = Handlebars.compile('\
     <div class="message">\
       <div class="header">\
-        <img src="https://graph.facebook.com/{{user.id}}/picture">\
+        <img src="{{user.pic}}">\
         <strong>{{user.name}}</strong>\
         <small>{{timestamp}}</small>\
       </div>\
