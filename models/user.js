@@ -4,7 +4,7 @@ var User = {
     this.collection = db.collection('users');
     this.collection.ensureIndex({id: 1}, function(err, indexName) {
       if (err) {
-        console.error('Error setting index on users');
+        console.error('Error setting index on users collection.');
         console.error(err);
       }
     });
