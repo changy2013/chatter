@@ -48,11 +48,11 @@ passport.use(new FacebookStrategy({
 ));
 
 passport.serializeUser(function(user, done) {
-  done(null, user.id);
+  done(null, { id: user.id, name: user.name });
 });
 
-passport.deserializeUser(function(id, done) {
-  User.find(id, function(err, user) {
+passport.deserializeUser(function(user, done) {
+  User.find(user.id, function(err, user) {
     done(err, user);
   });
 });
