@@ -41,7 +41,7 @@
             <!--=============================================================================================== MENU -->
             <li><a href="#TODO">About</a></li>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" id="current-user" data-toggle="dropdown" data-user-id="{{user.id}}">{{user.name}} <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{user.name}} <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="#TODO">Change title</a></li>
                 <li><a href="#TODO">Help</a></li>

@@ -3,7 +3,6 @@
 var socket = io.connect('/');
 var messageContainer = $('#message-container');
 var messageInput = $('#message-input');
-var currentUser = $('#current-user');
 var windowHasFocus = true;
 var windowTitle = document.title;
 var unreadMessageCount = 0;
@@ -179,8 +178,7 @@ socket.on('message', function(data) {
   var lastMessage = $('.message').last();
   var lastMessageUserId = lastMessage.attr('data-user-id') || '';
   var lastMessageTimestamp = parseInt(lastMessage.attr('data-timestamp')) || -1;
-  var timestampNow = new Date().getTime();
-  if (lastMessageUserId == currentUser.attr('data-user-id') && timestampNow - lastMessageTimestamp < groupMessageInterval) {
+  if (data.user.id == lastMessageUserId && data.timestamp - lastMessageTimestamp < groupMessageInterval) {
     lastMessage.find('.text').append(data.text);
   } else {
     messageContainer.append(messageContainerTemplate(data));
