@@ -54,6 +54,8 @@ io.configure(function() {
   });
 });
 
+var htmlTagPattern = /<[\/\!]*?[^<>]*?>/gi;
+
 io.sockets.on('connection', function(socket) {
 
   io.sockets.emit('system-message', { text: socket.handshake.session.passport.user.name + ' connected' });
@@ -65,9 +67,8 @@ io.sockets.on('connection', function(socket) {
   socket.on('message', function(data) {
     var message = {
       user: socket.handshake.session.passport.user,
-      timestamp: new Date(),
-      // TODO: pls sanitize this i.e. script tags
-      text: data,
+      date: new Date(),
+      text: data.replace(htmlTagPattern, ''),
     };
     io.sockets.emit('message', message);
     // TODO: save message to mongoDB
