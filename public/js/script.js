@@ -131,6 +131,18 @@ socket.on('system-message', function(data) {
 
 //===============================================
 
+socket.on('title', function(data) {
+  // trim title if necessary
+  if (data.text.length > titleMaxLength) {
+    data.text = data.text.substr(0, titleMaxLength - 3) + '...';
+  }
+  data.text = urlify(data.text);
+  data.text = smileyfy(data.text);
+  $('.title').html(data.text);
+});
+
+//===============================================
+
 socket.on('message', function(data) {
   var date = new Date(data.date);
   // convert date to human-friendly format

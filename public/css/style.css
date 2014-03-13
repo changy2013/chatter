@@ -34,8 +34,12 @@ body,
   color: #777;
 }
 
+.navbar .smiley {
+  vertical-align: -3px;
+}
+
 .navbar img {
-  width: 32px;
+  max-width: 32px;
 }
 
 .navbar small {

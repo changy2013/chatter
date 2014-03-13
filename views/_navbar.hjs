@@ -8,13 +8,13 @@
             <span class="icon-bar"></span>
           </button>
           <a class="navbar-brand visible-xs counter" href=".">3 online</a>
-          <p class="navbar-text hidden-xs title">Veggies es bonus vobis, proinde essum magis kohlrabi welsh onion daikon.</p>
+          <p class="navbar-text hidden-xs title">&lbrace;&lbrace; chatter.title &rbrace;&rbrace;</p>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
             <!--=============================================================================================== MOBILE-ONLY TITLE + USER LIST -->
             <li class="visible-xs">
-              <span class="title">Veggies es bonus vobis, proinde essum magis kohlrabi welsh onion daikon.</span>
+              <span class="title">&lbrace;&lbrace; chatter.title &rbrace;&rbrace;</span>
             </li>
             <li class="visible-xs">
               <a href="#TODO">

@@ -10,6 +10,8 @@ var newlinePattern = /\n/g;
 
 // group messages from the same user for x milliseconds
 var groupMessageInterval = 60 * 1000;
+// (number of 'W's that fit in the navbar at a screen width of 768) * 2 - 10
+var titleMaxLength = 72;
 
 var smileys = [
   { code: '\[..\]', url: '/smileys/transformer.gif' },

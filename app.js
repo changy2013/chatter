@@ -11,6 +11,7 @@ var Server = require('mongodb').Server;
 var Db = require('mongodb').Db;
 var User = require('./models/user');
 var Message = require('./models/message');
+var Title = require('./models/title');
 
 //================================================================================================= PASSPORT
 
@@ -67,6 +68,13 @@ io.sockets.on('connection', function(socket) {
     socket.emit('system-message', { text: 'Fetched latest messages sent to the room' });
   });
 
+  Title.latest(function(err, items) {
+    if (err) { return console.error('Error fetching latest title:', err); }
+    if (items[0]) {
+      socket.emit('title', items[0]);
+    }
+  });
+
   socket.broadcast.emit('system-message', { text: socket.handshake.session.passport.user.name + ' connected' });
 
   socket.on('disconnect', function() {
@@ -84,6 +92,24 @@ io.sockets.on('connection', function(socket) {
     });
     io.sockets.emit('message', message);
   });
+
+
+  socket.on('title', function(data) {
+    var title = {
+      user: socket.handshake.session.passport.user,
+      date: new Date(),
+      text: data.replace(htmlTagPattern, ''),
+    };
+    Title.insert(title, function(err, result) {
+      if (err) { return console.error('Error inserting title:', err); }
+    });
+    io.sockets.emit('title', title);
+    io.sockets.emit('system-message', { text: socket.handshake.session.passport.user.name + ' changed chat title' });
+  });
+
+
+
+
 
 });
 
@@ -134,6 +160,7 @@ db.open(function(err, db) {
   if (err) { throw err; }
   User.init(db);
   Message.init(db);
+  Title.init(db);
   server.listen(app.get('port'), function() {
     console.log('chatter listening on port ' + app.get('port'));
   });
