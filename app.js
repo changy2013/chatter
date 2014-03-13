@@ -10,6 +10,7 @@ var path = require('path');
 var Server = require('mongodb').Server;
 var Db = require('mongodb').Db;
 var User = require('./models/user');
+var Message = require('./models/message');
 
 //================================================================================================= PASSPORT
 
@@ -58,7 +59,15 @@ var htmlTagPattern = /<[\/\!]*?[^<>]*?>/gi;
 
 io.sockets.on('connection', function(socket) {
 
-  io.sockets.emit('system-message', { text: socket.handshake.session.passport.user.name + ' connected' });
+  Message.latest(function(err, items) {
+    if (err) { return console.error('Error fetching latest messages:', err); }
+    for (var i = 0; i < items.length; i++) {
+      socket.emit('message', items[items.length - 1 - i]);
+    }
+    socket.emit('system-message', { text: 'Fetched latest messages sent to the room' });
+  });
+
+  socket.broadcast.emit('system-message', { text: socket.handshake.session.passport.user.name + ' connected' });
 
   socket.on('disconnect', function() {
     io.sockets.emit('system-message', { text: socket.handshake.session.passport.user.name + ' disconnected' });
@@ -70,8 +79,10 @@ io.sockets.on('connection', function(socket) {
       date: new Date(),
       text: data.replace(htmlTagPattern, ''),
     };
+    Message.insert(message, function(err, result) {
+      if (err) { return console.error('Error inserting message:', err); }
+    });
     io.sockets.emit('message', message);
-    // TODO: save message to mongoDB
   });
 
 });
@@ -122,6 +133,7 @@ var db = new Db(config.mongodb.database,
 db.open(function(err, db) {
   if (err) { throw err; }
   User.init(db);
+  Message.init(db);
   server.listen(app.get('port'), function() {
     console.log('chatter listening on port ' + app.get('port'));
   });
