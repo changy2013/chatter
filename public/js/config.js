@@ -1,3 +1,16 @@
+//================================================================================================= GLOBALS
+
+// commands that do not render the user's message
+var specialCommands = ['/meme'];
+
+// split by space preserving quoted values
+var quotedWordsPattern = /(?:[^\s"]+|"[^"]*")+/g;
+var urlPattern = /(http[s]?:\/\/\S+)/gi;
+var newlinePattern = /\n/g;
+
+// group messages from the same user for x milliseconds
+var groupMessageInterval = 60 * 1000;
+
 var smileys = [
   { code: '\[..\]', url: '/smileys/transformer.gif' },
   { code: ':BZ', url: '/smileys/115.gif' },
@@ -159,3 +172,65 @@ var smileys = [
   { code: ':-)', url: '/smileys/1.gif' },
   { code: ':)', url: '/smileys/1.gif' },
 ];
+
+//================================================================================================= TEMPLATES
+
+var systemMessageTemplate = Handlebars.compile('\
+  <div class="system-message">{{text}}</div>\
+');
+
+var messageContainerTemplate = Handlebars.compile('\
+  <div class="message" data-user-id="{{user.id}}" data-timestamp="{{timestamp}}">\
+    <div class="header">\
+      <img src="{{user.pic}}">\
+      <strong>{{user.name}}</strong>\
+      <small>{{date}}</small>\
+    </div>\
+    <div class="text">\
+      {{{text}}}\
+    </div>\
+  </div>\
+');
+
+var messageTemplate = Handlebars.compile('\
+  <p>{{{text}}}</p>\
+');
+
+var quoteTemplate = Handlebars.compile('\
+  <blockquote>\
+    <p>{{{text}}}</p>\
+  </blockquote>\
+');
+
+var smileyTemplate = Handlebars.compile('\
+  <img class="smiley" src="{{url}}" title="{{code}}">\
+');
+
+var picsTemplate = Handlebars.compile('\
+  <div class="media">\
+    <div>\
+      {{#each pics}}\
+        <a href="{{this}}" target="_blank"><img src="{{this}}"\
+          onerror="$(this).parent().parent().parent().remove();"\
+        ></a>\
+      {{/each}}\
+    </div>\
+    <span class="glyphicon glyphicon-remove close"></span>\
+  </div>\
+');
+
+var memeTemplate = Handlebars.compile('\
+  <div class="media">\
+    <div class="meme">\
+      <div class="top">{{top}}</div>\
+      <div class="bottom">{{bottom}}</div>\
+      <img src="{{pic}}"\
+        onload="var width = $(this).width(); $(this).parent().parent().find(\'div\').width(width);"\
+        onerror="$(this).parent().parent().hide(\'normal\');"\
+      >\
+    </div>\
+    <span class="glyphicon glyphicon-remove close"></span>\
+  </div>\
+');
+
+//================================================================================================= END
