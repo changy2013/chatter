@@ -1,8 +1,15 @@
 //================================================================================================= SECTION
 
+function cssSupport(property, value) {
+  var div = $('<div></div>');
+  div.css(property, value);
+  if (div.attr('style').indexOf(value) != -1) {
+    return true;
+  }
+  return false;
+}
 
-// TODO: this is a pretty unreliable way of detecting CSS calc() support
-if ($('#message-container').height() > $('body').height()) {
+if (!cssSupport('height', 'calc(25px)')) {
   $('#message-container').height($('body').height() - 75);
   $(window).resize(function() {
     $('#message-container').height($('body').height() - 75);
@@ -19,10 +26,20 @@ $(document).on('click', '.media .close', function() {
 
 
 
+
+
+
+
+
+
+
+
+
+
 var systemMessageTemplate = Handlebars.compile('\
   <div class="system-message">{{text}}</div>\
 ');
-var fullMessageTemplate = Handlebars.compile('\
+var messageContainerTemplate = Handlebars.compile('\
   <div class="message" data-user-id="{{user.id}}" data-timestamp="{{timestamp}}">\
     <div class="header">\
       <img src="{{user.pic}}">\
@@ -34,8 +51,6 @@ var fullMessageTemplate = Handlebars.compile('\
     </div>\
   </div>\
 ');
-
-
 var messageTemplate = Handlebars.compile('\
   <p>{{{text}}}</p>\
 ');
@@ -44,7 +59,10 @@ var quoteTemplate = Handlebars.compile('\
     <p>{{{text}}}</p>\
   </blockquote>\
 ');
-var imgTemplate = Handlebars.compile('\
+var smileyTemplate = Handlebars.compile('\
+  <img class="smiley" src="{{url}}" title="{{code}}">\
+');
+var picsTemplate = Handlebars.compile('\
   <div class="media">\
     <div>\
       {{#each pics}}\
@@ -69,9 +87,6 @@ var memeTemplate = Handlebars.compile('\
     <span class="glyphicon glyphicon-remove close"></span>\
   </div>\
 ');
-var smileyTemplate = Handlebars.compile('\
-  <img class="smiley" src="{{url}}" title="{{code}}">\
-');
 
 
 
@@ -82,40 +97,46 @@ var smileyTemplate = Handlebars.compile('\
 var socket = io.connect('/');
 
 var messageContainer = $('#message-container');
-var input = $('#input');
-var hasFocus = true;
-var title = document.title;
-var unreadMessages = 0;
-input.focus();
+var messageInput = $('#message-input');
+var currentUser = $('#current-user');
 
-
-$(window).focus(function() {
-  hasFocus = true;
-  unreadMessages = 0;
-  document.title = title;
-  input.focus();
-});
-$(window).blur(function() {
-  hasFocus = false;
-});
-
-
-
+var windowHasFocus = true;
+var windowTitle = document.title;
+var unreadMessageCount = 0;
 
 
 var quotedWordsPattern = /(?:[^\s"]+|"[^"]*")+/g;
 var urlPattern = /(http[s]?:\/\/\S+)/gi;
 var newlinePattern = /\n/g;
 
+// group messages from the same users for number o millisecs
+var groupMessageInterval = 10 * 1000;
+
+
+
+
+messageInput.focus();
+$(window).focus(function() {
+  windowHasFocus = true;
+  document.title = windowTitle;
+  messageInput.focus();
+  unreadMessageCount = 0;
+});
+$(window).blur(function() {
+  windowHasFocus = false;
+});
+
+
 
 function scroll() {
-  if (!hasFocus) {
-    unreadMessages += 1;
-    document.title = '(' + unreadMessages + ') ' + title;
-    return;
+  if (windowHasFocus) {
+    messageContainer.scrollTop(messageContainer.prop('scrollHeight'));
+  } else {
+    unreadMessageCount += 1;
+    document.title = '(' + unreadMessageCount + ') ' + windowTitle;
   }
-  messageContainer.scrollTop(messageContainer.prop('scrollHeight'));
 }
+
 
 function stripQuotes(str) {
   if (str[0] == '"') {
@@ -177,17 +198,17 @@ socket.on('system-message', function(data) {
   scroll();
 });
 
-input.keydown(function(event) {
+messageInput.keydown(function(event) {
   if (event.which == 13) {
     if (event.shiftKey) {
       return;
     }
     event.preventDefault();
-    if (!input.val()) {
+    if (!messageInput.val()) {
       return;
     }
-    socket.emit('message', input.val());
-    input.val('');
+    socket.emit('message', messageInput.val());
+    messageInput.val('');
   }
 });
 
@@ -251,19 +272,18 @@ socket.on('message', function(data) {
 
   var lastMessage = $('.message').last();
   var lastMessageUserId = lastMessage.attr('data-user-id') || '';
-  var lastMessageTimestamp = parseInt(lastMessage.attr('data-timestamp')) / 1000 || -1;
-  var now = new Date().getTime() / 1000;
-  // TODO: change to this.user.id                                            // number of seconds to group messages
-  if (lastMessageUserId == '100002174933434' && now - lastMessageTimestamp < 10) {
+  var lastMessageTimestamp = parseInt(lastMessage.attr('data-timestamp')) || -1;
+  var timestampNow = new Date().getTime();
+  if (lastMessageUserId == currentUser.attr('data-user-id') && timestampNow - lastMessageTimestamp < groupMessageInterval) {
     lastMessage.find('.text').append(data.text);
   } else {
-    messageContainer.append(fullMessageTemplate(data));
+    messageContainer.append(messageContainerTemplate(data));
   }
 
 
 
   if (pics.length && commands.indexOf(firstWord) == -1) {
-    var picHtml = imgTemplate({pics: pics});
+    var picHtml = picsTemplate({pics: pics});
     $('.text').last().append(picHtml);
   }
 

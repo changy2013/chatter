@@ -185,11 +185,11 @@ body,
 
 /*================================================================================================= INPUT */
 
-#input-container {
+#message-input-container {
   margin-top: 4px;
 }
 
-#input {
+#message-input {
   height: 54px;
   padding-left: 8px;
 }

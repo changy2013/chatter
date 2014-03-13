@@ -5,9 +5,9 @@
   <div class="row full-height">
     <div class="col-sm-9 full-height">
       <div id="message-container"></div>
-      <div id="input-container">
+      <div id="message-input-container">
         <form>
-          <textarea class="form-control" id="input" rows="2" placeholder="Type something penis and press funny"></textarea>
+          <textarea class="form-control" id="message-input" rows="2" placeholder="Type something penis and press funny"></textarea>
         </form>
       </div>
     </div>
