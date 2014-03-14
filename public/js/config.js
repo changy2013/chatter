@@ -14,6 +14,7 @@ var groupMessageInterval = 60 * 1000;
 var titleMaxLength = 72;
 
 var smileys = [
+  // add aditional smileys here
   { code: '\[..\]', url: '/smileys/transformer.gif' },
   { code: ':BZ', url: '/smileys/115.gif' },
   { code: ':bZ', url: '/smileys/115.gif' },
@@ -205,7 +206,7 @@ var quoteTemplate = Handlebars.compile('\
 ');
 
 var smileyTemplate = Handlebars.compile('\
-  <img class="smiley" src="{{url}}" title="{{code}}">\
+  <img class="smiley" src="{{url}}" alt="{{code}}" title="{{code}}">\
 ');
 
 var picsTemplate = Handlebars.compile('\
@@ -233,6 +234,16 @@ var memeTemplate = Handlebars.compile('\
     </div>\
     <span class="glyphicon glyphicon-remove close"></span>\
   </div>\
+');
+
+var smileysTemplate = Handlebars.compile('\
+  <table class="table table-bordered table-condensed">\
+    {{#each smileys}}\
+      <tr>\
+        <td><img src="{{url}}" alt="{{code}}" title="{{code}}"></td>\
+        <td>{{code}}</td>\
+    {{/each}}\
+  </table>\
 ');
 
 //================================================================================================= END

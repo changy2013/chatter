@@ -132,6 +132,8 @@ socket.on('system-message', function(data) {
 //===============================================
 
 socket.on('title', function(data) {
+  // add title to the change title modal
+  $('#modal-title input').val(data.text);
   // trim title if necessary
   if (data.text.length > titleMaxLength) {
     data.text = data.text.substr(0, titleMaxLength - 3) + '...';
@@ -197,12 +199,60 @@ socket.on('message', function(data) {
   }
   // append urls as pics
   if (urls.length && !isSpecialCommand) {
-    var picHtml = picsTemplate({
+    $('.text').last().append(picsTemplate({
       pics: urls,
-    });
-    $('.text').last().append(picHtml);
+    }));
   }
   scroll();
+});
+
+//================================================================================================= MODALS
+
+$('#modal-title').on('shown.bs.modal', function() {
+  $('#modal-title input').focus();
+});
+
+$('#modal-title form').submit(function() {
+  socket.emit('title', $('#modal-title input').val());
+  $('#modal-title').modal('hide');
+  // hide dropdown
+  $(document).click();
+  return false;
+});
+
+$('#modal-title .btn-primary').click(function() {
+  socket.emit('title', $('#modal-title input').val());
+  $('#modal-title').modal('hide');
+});
+
+$('#btn-title').click(function() {
+  $('#modal-title').modal();
+  return false;
+});
+
+//===============================================
+
+$('#btn-about').click(function() {
+  $('#modal-about').modal();
+  return false;
+});
+
+//===============================================
+
+var uniqueSmileys = [smileys[smileys.length - 1]];
+for (var i = 0; i < smileys.length; i++) {
+  if (smileys[smileys.length - i - 1].url != uniqueSmileys[uniqueSmileys.length - 1].url) {
+    uniqueSmileys.push(smileys[smileys.length - i - 1]);
+  }
+}
+
+$('#modal-help .modal-body').append(smileysTemplate({
+  smileys: uniqueSmileys,
+}));
+
+$('#btn-help').click(function() {
+  $('#modal-help').modal();
+  return false;
 });
 
 //================================================================================================= END
