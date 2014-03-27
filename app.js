@@ -57,8 +57,17 @@ io.configure(function() {
 });
 
 var htmlTagPattern = /<[\/\!]*?[^<>]*?>/gi;
+var users = {};
 
 io.sockets.on('connection', function(socket) {
+
+  users[socket.handshake.session.passport.user.id] = {
+    name: socket.handshake.session.passport.user.name,
+    pic: socket.handshake.session.passport.user.pic,
+    date: new Date(),
+  }
+
+  io.sockets.emit('users', users);
 
   Message.latest(function(err, items) {
     if (err) { return console.error('Error fetching latest messages:', err); }
@@ -78,6 +87,8 @@ io.sockets.on('connection', function(socket) {
   socket.broadcast.emit('system-message', { text: socket.handshake.session.passport.user.name + ' connected' });
 
   socket.on('disconnect', function() {
+    delete users[socket.handshake.session.passport.user.id];
+    io.sockets.emit('users', users);
     io.sockets.emit('system-message', { text: socket.handshake.session.passport.user.name + ' disconnected' });
   });
 
@@ -93,7 +104,6 @@ io.sockets.on('connection', function(socket) {
     io.sockets.emit('message', message);
   });
 
-
   socket.on('title', function(data) {
     var title = {
       user: socket.handshake.session.passport.user,
@@ -107,9 +117,22 @@ io.sockets.on('connection', function(socket) {
     io.sockets.emit('system-message', { text: socket.handshake.session.passport.user.name + ' changed chat title' });
   });
 
+  socket.on('ping', function(data) {
+    users[socket.handshake.session.passport.user.id] = {
+      name: socket.handshake.session.passport.user.name,
+      pic: socket.handshake.session.passport.user.pic,
+      date: new Date(),
+    }
+    if (data) {
+      if (data.triggerUpdate) {
+        io.sockets.emit('users', users);
+      }
+    }
+  });
 
-
-
+  setInterval(function() {
+    io.sockets.emit('users', users);
+  }, config.app.usersUpdateInterval);
 
 });
 

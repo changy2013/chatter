@@ -46,7 +46,7 @@ body,
 }
 
 .navbar img {
-  max-width: 32px;
+  max-width: 32px !important;
 }
 
 .navbar small {
@@ -211,7 +211,7 @@ body,
   padding: 8px 0 0 0;
 }
 
-.user {
+#user-container .user {
   margin-bottom: 8px;
   /* prevents text from wrapping on small screens */
   white-space: nowrap;
@@ -219,15 +219,19 @@ body,
   overflow: hidden;
 }
 
-.user img {
+#user-container .user img {
   float: left;
   width: 32px;
   margin-right: 5px;
 }
 
-.user p {
+#user-container .user p {
   margin: 0;
   line-height: 16px;
+}
+
+.user-idle {
+  opacity: 0.5;
 }
 
 /*================================================================================================= SCROLLBARS */

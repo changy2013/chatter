@@ -3,6 +3,7 @@ var config = {
     host: 'http://localhost',
     port: 3000,
     secret: 'Super Secret Secret Squirrel',
+    usersUpdateInterval: 60 * 1000,
   },
   mongodb: {
     host: 'localhost',

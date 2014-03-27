@@ -6,6 +6,7 @@ var messageInput = $('#message-input');
 var windowHasFocus = true;
 var windowTitle = document.title;
 var unreadMessageCount = 0;
+var users = [];
 
 //================================================================================================= JAVASCRIPT FALLBACKS
 
@@ -78,6 +79,7 @@ $(window).focus(function() {
   document.title = windowTitle;
   messageInput.focus();
   unreadMessageCount = 0;
+  socket.emit('ping', { triggerUpdate: true });
 });
 
 $(window).blur(function() {
@@ -145,6 +147,37 @@ socket.on('title', function(data) {
 
 //===============================================
 
+socket.on('users', function(data) {
+  users = [];
+  var now = new Date();
+  for (var key in data) {
+    var lastPing = new Date(data[key].date);
+    data[key].timestamp = lastPing.getTime();
+    var timeSincePing = now.getTime() - lastPing.getTime();
+    var hoursSincePing = Math.floor(timeSincePing / (60 * 60 * 1000));
+    var minutesSincePing = Math.floor(timeSincePing / (60 * 1000));
+    if (hoursSincePing > 0) {
+      data[key].idle = hoursSincePing + 'h';
+    } else if (minutesSincePing > 0) {
+      data[key].idle = minutesSincePing + 'm';
+    }
+    users.push(data[key]);
+  }
+  users.sort(function(a, b) {
+    return b.timestamp - a.timestamp;
+  });
+  $('.navbar-collapse ul .user').remove();
+  $('.navbar-collapse ul').first().prepend(navbarUsersTemplate({
+    users: users,
+  }));
+  $('#user-container').html(sidebarUsersTemplate({
+    users: users,
+  }));
+  $('.counter').html(users.length + ' online');
+});
+
+//===============================================
+
 socket.on('message', function(data) {
   var date = new Date(data.date);
   // convert date to human-friendly format
@@ -205,6 +238,14 @@ socket.on('message', function(data) {
   }
   scroll();
 });
+
+//===============================================
+
+setInterval(function() {
+  if (windowHasFocus) {
+    socket.emit('ping');
+  }
+}, pingInterval);
 
 //================================================================================================= MODALS
 

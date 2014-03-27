@@ -13,6 +13,9 @@ var groupMessageInterval = 60 * 1000;
 // (number of 'W's that fit in the navbar at a screen width of 768) * 2 - 10
 var titleMaxLength = 72;
 
+// ping the server so it knows you're not idle
+var pingInterval = 60 * 1000;
+
 var smileys = [
   // add aditional smileys here
   { code: '\[..\]', url: '/smileys/transformer.gif' },
@@ -244,6 +247,41 @@ var smileysTemplate = Handlebars.compile('\
         <td>{{code}}</td>\
     {{/each}}\
   </table>\
+');
+
+var navbarUsersTemplate = Handlebars.compile('\
+  {{#each users}}\
+    <li class="visible-xs user {{#if idle}} user-idle {{/if}}">\
+      <a href="#TODO">\
+        <img src="{{pic}}">\
+        {{name}}\
+        {{#if idle}}\
+          {{idle}}\
+        {{/if}}\
+        <small>&lbrace;&lbrace; user.location &rbrace;&rbrace;</small>\
+      </a>\
+    </li>\
+  {{/each}}\
+');
+
+var sidebarUsersTemplate = Handlebars.compile('\
+  {{#each users}}\
+    <div class="user {{#if idle}} user-idle {{/if}}">\
+      <img src="{{pic}}">\
+      <div class="info">\
+        <p>\
+          {{name}}\
+          {{# if idle}}\
+            <small>{{idle}}</small>\
+          {{/if}}\
+        </p>\
+        <p>\
+          <small><a href="#TODO">&lbrace;&lbrace; user.location &rbrace;&rbrace;</a></small>\
+        </p>\
+      </div>\
+      <div class="clearfix"></div>\
+    </div>\
+  {{/each}}\
 ');
 
 //================================================================================================= END
