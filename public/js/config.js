@@ -199,12 +199,12 @@ var messageContainerTemplate = Handlebars.compile('\
 ');
 
 var messageTemplate = Handlebars.compile('\
-  <p>{{{text}}}</p>\
+  <p {{#if mention}} class="mention" {{/if}}>{{{text}}}</p>\
 ');
 
 var quoteTemplate = Handlebars.compile('\
   <blockquote>\
-    <p>{{{text}}}</p>\
+    <p {{#if mention}} class="mention" {{/if}}>{{{text}}}</p>\
   </blockquote>\
 ');
 

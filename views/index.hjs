@@ -15,6 +15,12 @@
   </div>
 </div>
 
+<script type="text/javascript">
+  var currentUser = {
+    id: '{{user.id}}',
+    name: '{{user.name}}',
+  };
+</script>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 <script type="text/javascript" src="/js/handlebars-v1.3.0.js"></script>
 <script type="text/javascript" src="/js/config.js"></script>

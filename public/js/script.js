@@ -1,6 +1,7 @@
 //================================================================================================= GLOBALS
 
 var socket = io.connect('/');
+var mentionPattern = new RegExp('@' + currentUser.name, 'g');
 var messageContainer = $('#message-container');
 var messageInput = $('#message-input');
 var windowHasFocus = true;
@@ -89,6 +90,22 @@ $(window).blur(function() {
 //================================================================================================= MESSAGE INPUT
 
 messageInput.keydown(function(event) {
+  if (event.which == 9) {
+    var text = messageInput.val();
+    var atSignPoz = text.length - 1;
+    while (atSignPoz > 0 && text[atSignPoz] != '@') {
+      atSignPoz -= 1;
+    }
+    if (text[atSignPoz] == '@') {
+      var mention = text.substring(atSignPoz + 1, text.length);
+      for (var i = 0; i < users.length; i++) {
+        if (users[i].name.toLowerCase().indexOf(mention.toLowerCase()) == 0) {
+          messageInput.val(text.substring(0, atSignPoz + 1) + users[i].name);
+        }
+      }
+    }
+    return false;
+  }
   if (event.which == 13) {
     if (event.shiftKey) {
       return;
@@ -200,6 +217,11 @@ socket.on('message', function(data) {
   }
   // if it's not a special command, we may process the text
   if (!isSpecialCommand) {
+    if (data.text.search(mentionPattern) != -1) {
+      var mention = '<strong>@' + currentUser.name + '</strong>';
+      data.text = data.text.replace(mentionPattern, mention);
+      data.mention = true;
+    }
     data.text = data.text.replace(newlinePattern, '<br>');
     data.text = urlify(data.text);
     data.text = smileyfy(data.text);
