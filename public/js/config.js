@@ -252,13 +252,13 @@ var smileysTemplate = Handlebars.compile('\
 var navbarUsersTemplate = Handlebars.compile('\
   {{#each users}}\
     <li class="visible-xs user {{#if idle}} user-idle {{/if}}">\
-      <a href="#TODO">\
+      <a href="https://www.google.com/maps/search/{{location}}" target="_blank">\
         <img src="{{pic}}">\
         {{name}}\
         {{#if idle}}\
           {{idle}}\
         {{/if}}\
-        <small>&lbrace;&lbrace; user.location &rbrace;&rbrace;</small>\
+        <small>{{location}}</small>\
       </a>\
     </li>\
   {{/each}}\
@@ -276,7 +276,7 @@ var sidebarUsersTemplate = Handlebars.compile('\
           {{/if}}\
         </p>\
         <p>\
-          <small><a href="#TODO">&lbrace;&lbrace; user.location &rbrace;&rbrace;</a></small>\
+          <small><a href="https://www.google.com/maps/search/{{location}}" target="_blank">{{location}}</a></small>\
         </p>\
       </div>\
       <div class="clearfix"></div>\

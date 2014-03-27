@@ -73,6 +73,26 @@ function scroll() {
   }
 }
 
+function geolocate(callback) {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var geocoder = new google.maps.Geocoder();
+      var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      geocoder.geocode({'latLng': latLng}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          var location = results[0].address_components[0].long_name +
+            ', ' + results[0].address_components[2].long_name;
+          callback(location);
+        } else {
+          console.log('Geocoder failed:', status);
+        }
+      });
+    }, function() {
+      console.log('Geolocation failed');
+    });
+  }
+}
+
 //================================================================================================= WINDOW FOCUS / BLUR
 
 $(window).focus(function() {
@@ -123,6 +143,11 @@ messageInput.keydown(function(event) {
 
 socket.on('connect', function() {
   console.log('Socket.IO connected :)');
+  geolocate(function(location) {
+    socket.emit('location', {
+      location: location,
+    });
+  });
 });
 
 //===============================================

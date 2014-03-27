@@ -21,6 +21,7 @@
     name: '{{user.name}}',
   };
 </script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 <script type="text/javascript" src="/js/handlebars-v1.3.0.js"></script>
 <script type="text/javascript" src="/js/config.js"></script>

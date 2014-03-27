@@ -118,16 +118,17 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('ping', function(data) {
-    users[socket.handshake.session.passport.user.id] = {
-      name: socket.handshake.session.passport.user.name,
-      pic: socket.handshake.session.passport.user.pic,
-      date: new Date(),
-    }
+    users[socket.handshake.session.passport.user.id].date = new Date();
     if (data) {
       if (data.triggerUpdate) {
         io.sockets.emit('users', users);
       }
     }
+  });
+
+  socket.on('location', function(data) {
+    users[socket.handshake.session.passport.user.id].location = data.location;
+    io.sockets.emit('users', users);
   });
 
   setInterval(function() {
