@@ -229,9 +229,7 @@ socket.on('message', function(data) {
   // render the message
   if (data.text.indexOf('/quote') == 0) {
     data.text = data.text.replace('/quote', '');
-    data.text = quoteTemplate({
-      text: data.text,
-    });
+    data.text = quoteTemplate(data);
   } else if (data.text.indexOf('/meme') == 0) {
     var tokens = data.text.match(quotedWordsPattern);
     var memeData = {
