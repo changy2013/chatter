@@ -31,12 +31,16 @@ passport.use(new FacebookStrategy({
           };
           if (count === 0) {
             user.whitelisted = true;
-            user.whitelistedBy = 'God';
+            user.whitelistedBy = {
+              id: '667',
+              name: 'God',
+            };
             User.insert(user, function(err, result) {
               if (err) { return done(err); }
               done(null, result[0]);
             });
           } else {
+            user.pending = true;
             User.insert(user, function(err, result) {
               if (err) { return done(err); }
               done(null, false);

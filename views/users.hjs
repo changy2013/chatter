@@ -1,0 +1,74 @@
+{{> header}}
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6 col-sm-offset-3">
+      {{#message}}
+        <div class="alert alert-success alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          <strong>Well done!</strong> {{message}}.
+        </div>
+      {{/message}}
+      <h2>pending users <small class="text-info"><span class="glyphicon glyphicon-search"></span></small></h2>
+      <table class="table table-condensed">
+        {{#users}}
+          {{#pending}}
+            <tr>
+              <td>
+                <img src="{{pic}}">
+                {{name}}
+              </td>
+              <td>
+                <a href="/whitelist/{{id}}" class="btn btn-success btn-xs">whitelist</a>
+              </td>
+              <td></td>
+            </tr>
+          {{/pending}}
+        {{/users}}
+      </table>
+      <h2>whitelisted users <small class="text-success"><span class="glyphicon glyphicon-ok"></span></small></h2>
+      <table class="table table-condensed">
+        {{#users}}
+          {{#whitelisted}}
+            <tr>
+              <td>
+                <img src="{{pic}}">
+                {{name}}
+              </td>
+              <td>
+                <small>whitelisted by {{whitelistedBy.name}}</small>
+              </td>
+              <td>
+                <a href="/blacklist/{{id}}" class="btn btn-danger btn-xs">blacklist</a>
+              </td>
+              <td></td>
+            </tr>
+          {{/whitelisted}}
+        {{/users}}
+      </table>
+      <h2>blacklisted users <small class="text-danger"><span class="glyphicon glyphicon-ban-circle"></span></small></h2>
+      <table class="table table-condensed">
+        {{#users}}
+          {{#blacklisted}}
+            <tr>
+              <td>
+                <img src="{{pic}}">
+                {{name}}
+              </td>
+              <td>
+                <small>blacklisted by {{blacklistedBy.name}}</small>
+              </td>
+              <td>
+                <a href="/whitelist/{{id}}" class="btn btn-success btn-xs">whitelist</a>
+              </td>
+              <td></td>
+            </tr>
+          {{/blacklisted}}
+        {{/users}}
+      </table>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" type="text/css" href="/css/users.css">
+{{> footer}}

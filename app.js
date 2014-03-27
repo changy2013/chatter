@@ -173,6 +173,9 @@ app.get('/logout', function(req, res) {
 app.get('/', ensureAuthenticated, routes.index);
 app.get('/login', routes.login);
 app.get('/not-whitelisted', routes.notWhitelisted);
+app.get('/users', ensureAuthenticated, routes.users);
+app.get('/whitelist/:id', ensureAuthenticated, routes.whitelist);
+app.get('/blacklist/:id', ensureAuthenticated, routes.blacklist);
 
 //================================================================================================= START APP
 

@@ -80,7 +80,7 @@
                 <li><a href="#TODO">History</a></li>
                 <li class="divider"></li>
                 <li><a id="btn-title" href="#">Change title</a></li>
-                <li><a href="#TODO">Whitelist</a></li>
+                <li><a href="/users" target="_blank">Users</a></li>
               </ul>
             </li>
             <li class="dropdown">

@@ -10,6 +10,12 @@ var User = {
     });
   },
 
+  all: function(callback) {
+    this.collection.find().toArray(function(err, items) {
+      callback(err, items);
+    });
+  },
+
   find: function(id, callback) {
     this.collection.findOne({'id': id}, function(err, item) {
       callback(err, item);
@@ -39,7 +45,21 @@ var User = {
   },
 
   whitelist: function(id, author, callback) {
-    this.collection.update({'id': id}, {$set: {whitelisted: true, whitelistedBy: author}}, function(err, result) {
+    var whitelistAuthor = {
+      id: author.id,
+      name: author.name,
+    };
+    this.collection.update({'id': id}, {$set: {pending: false, blacklisted: false, whitelisted: true, whitelistedBy: whitelistAuthor}}, function(err, result) {
+      callback(err, result);
+    });
+  },
+
+  blacklist: function(id, author, callback) {
+    var blacklistAuthor = {
+      id: author.id,
+      name: author.name,
+    };
+    this.collection.update({'id': id}, {$set: {pending: false, whitelisted: false, blacklisted: true, blacklistedBy: blacklistAuthor}}, function(err, result) {
       callback(err, result);
     });
   },
