@@ -127,7 +127,7 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('location', function(data) {
-    users[socket.handshake.session.passport.user.id].location = data.location;
+    users[socket.handshake.session.passport.user.id].location = data.location.replace(htmlTagPattern, '');
     io.sockets.emit('users', users);
   });
 
