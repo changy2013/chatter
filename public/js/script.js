@@ -38,20 +38,35 @@ messageInput.focus();
 
 //================================================================================================= HELPERS
 
-function urlify(text) {
-  return text.replace(urlPattern, '<a href="$1" target="_blank">$1</a>');
+function urlify(data) {
+  data.text = data.text.replace(urlPattern, '<a href="$1" target="_blank">$1</a>');
 }
 
-function smileyfy(text) {
-  for (var i = 0; i < smileys.length; i++) {
-    var pos = text.indexOf(smileys[i].code);
-    if (pos != -1) {
-      return smileyfy(text.substring(0, pos))
-              + smileyTemplate(smileys[i])
-              + smileyfy(text.substring(pos + smileys[i].code.length, text.length));
+function smileyfy(data) {
+  function _smileyfy(text) {
+    for (var i = 0; i < smileys.length; i++) {
+      var pos = text.indexOf(smileys[i].code);
+      if (pos != -1) {
+        return _smileyfy(text.substring(0, pos))
+                + smileyTemplate(smileys[i])
+                + _smileyfy(text.substring(pos + smileys[i].code.length, text.length));
+      }
     }
+    return text;
   }
-  return text;
+  data.text = _smileyfy(data.text);
+}
+
+function mentionify(data) {
+  if (data.text.search(mentionPattern) != -1) {
+    var mention = '<strong>@' + currentUser.name + '</strong>';
+    data.text = data.text.replace(mentionPattern, mention);
+    data.mention = true;
+  }
+}
+
+function lineBreakify(data) {
+  data.text = data.text.replace(newlinePattern, '<br>');
 }
 
 function stripQuotes(text) {
@@ -62,6 +77,25 @@ function stripQuotes(text) {
     text = text.substring(0, text.length - 1);
   }
   return text;
+}
+
+function append(data) {
+  var lastMessage = $('.message, .system-message').last();
+  var lastMessageUserId = lastMessage.attr('data-user-id') || '';
+  var lastMessageTimestamp = parseInt(lastMessage.attr('data-timestamp')) || -1;
+  if (data.user.id == lastMessageUserId && data.timestamp - lastMessageTimestamp < groupMessageInterval) {
+    lastMessage.find('.text').append(data.text);
+  } else {
+    messageContainer.append(messageContainerTemplate(data));
+  }
+}
+
+function appendPics(urls) {
+  if (urls.length) {
+    $('.text').last().append(picsTemplate({
+      pics: urls,
+    }));
+  }
 }
 
 function scroll() {
@@ -182,8 +216,8 @@ socket.on('title', function(data) {
   if (data.text.length > titleMaxLength) {
     data.text = data.text.substr(0, titleMaxLength - 3) + '...';
   }
-  data.text = urlify(data.text);
-  data.text = smileyfy(data.text);
+  urlify(data);
+  smileyfy(data);
   $('.title').html(data.text);
 });
 
@@ -233,29 +267,8 @@ socket.on('message', function(data) {
   while (match = urlPattern.exec(data.text)) {
     urls.push(match[0]);
   }
-  // figure out whether or not we have a special command
-  isSpecialCommand = false;
-  for (i = 0; i < specialCommands.length; i++) {
-    if (data.text.indexOf(specialCommands[i]) == 0) {
-      isSpecialCommand = true;
-    }
-  }
-  // if it's not a special command, we may process the text
-  if (!isSpecialCommand) {
-    if (data.text.search(mentionPattern) != -1) {
-      var mention = '<strong>@' + currentUser.name + '</strong>';
-      data.text = data.text.replace(mentionPattern, mention);
-      data.mention = true;
-    }
-    data.text = data.text.replace(newlinePattern, '<br>');
-    data.text = urlify(data.text);
-    data.text = smileyfy(data.text);
-  }
-  // render the message
-  if (data.text.indexOf('/quote') == 0) {
-    data.text = data.text.replace('/quote', '');
-    data.text = quoteTemplate(data);
-  } else if (data.text.indexOf('/meme') == 0) {
+
+  if (data.text.indexOf('/meme') == 0) {
     var tokens = data.text.match(quotedWordsPattern);
     var memeData = {
       pic: tokens[1],
@@ -263,24 +276,25 @@ socket.on('message', function(data) {
       bottom: stripQuotes(tokens[3] || '').toUpperCase(),
     }
     data.text = memeTemplate(memeData);
+    append(data);
+  } else if (data.text.indexOf('/quote') == 0) {
+    mentionify(data);
+    lineBreakify(data);
+    urlify(data);
+    smileyfy(data);
+    data.text = data.text.replace('/quote', '');
+    data.text = quoteTemplate(data);
+    append(data);
   } else {
+    mentionify(data);
+    lineBreakify(data);
+    urlify(data);
+    smileyfy(data);
     data.text = messageTemplate(data);
+    append(data);
+    appendPics(urls);
   }
-  // append the message
-  var lastMessage = $('.message').last();
-  var lastMessageUserId = lastMessage.attr('data-user-id') || '';
-  var lastMessageTimestamp = parseInt(lastMessage.attr('data-timestamp')) || -1;
-  if (data.user.id == lastMessageUserId && data.timestamp - lastMessageTimestamp < groupMessageInterval) {
-    lastMessage.find('.text').append(data.text);
-  } else {
-    messageContainer.append(messageContainerTemplate(data));
-  }
-  // append urls as pics
-  if (urls.length && !isSpecialCommand) {
-    $('.text').last().append(picsTemplate({
-      pics: urls,
-    }));
-  }
+
   scroll();
 });
 

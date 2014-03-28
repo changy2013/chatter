@@ -1,8 +1,5 @@
 //================================================================================================= GLOBALS
 
-// commands that do not render the user's message
-var specialCommands = ['/meme'];
-
 // split by space preserving quoted values
 var quotedWordsPattern = /(?:[^\s"]+|"[^"]*")+/g;
 var urlPattern = /(http[s]?:\/\/\S+)/gi;
