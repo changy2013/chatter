@@ -278,13 +278,18 @@ socket.on('message', function(data) {
     data.text = memeTemplate(memeData);
     append(data);
   } else if (data.text.indexOf('/quote') == 0) {
+    data.text = data.text.replace('/quote ', '');
     mentionify(data);
     lineBreakify(data);
     urlify(data);
     smileyfy(data);
-    data.text = data.text.replace('/quote', '');
     data.text = quoteTemplate(data);
     append(data);
+  } else if (data.text.indexOf('/whisper') == 0) {
+    data.text = data.text.replace('/whisper ', '');
+    var spacer = new Array(128).join(' ');
+    console.log((data.user.name + spacer).substr(0, 128), data.date);
+    console.log('    ', data.text);
   } else {
     mentionify(data);
     lineBreakify(data);
