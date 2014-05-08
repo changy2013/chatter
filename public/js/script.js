@@ -114,8 +114,7 @@ function geolocate(callback) {
       var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
       geocoder.geocode({'latLng': latLng}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
-          var location = results[0].address_components[0].long_name +
-            ', ' + results[0].address_components[2].long_name;
+          var location = results[0].formatted_address;
           callback(location);
         } else {
           console.log('Geocoder failed:', status);
