@@ -205,6 +205,10 @@ var quoteTemplate = Handlebars.compile('\
   </blockquote>\
 ');
 
+var codeTemplate = Handlebars.compile('\
+  <pre class="prettyprint linenums">{{{text}}}</pre>\
+');
+
 var smileyTemplate = Handlebars.compile('\
   <img class="smiley" src="{{url}}" alt="{{code}}" title="{{code}}">\
 ');

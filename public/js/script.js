@@ -288,6 +288,11 @@ socket.on('message', function(data) {
     smileyfy(data);
     data.text = quoteTemplate(data);
     append(data);
+  } else if (data.text.indexOf('/code') == 0) {
+    data.text = data.text.replace('/code ', '');
+    data.text = codeTemplate(data);
+    append(data);
+    prettyPrint();
   } else if (data.text.indexOf('/whisper') == 0) {
     data.text = data.text.replace('/whisper ', '');
     var spacer = new Array(128).join(' ');
