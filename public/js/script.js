@@ -153,7 +153,7 @@ messageInput.keydown(function(event) {
       var mention = text.substring(atSignPoz + 1, text.length);
       for (var i = 0; i < users.length; i++) {
         if (users[i].name.toLowerCase().indexOf(mention.toLowerCase()) == 0) {
-          messageInput.val(text.substring(0, atSignPoz + 1) + users[i].name);
+          messageInput.val(text.substring(0, atSignPoz + 1) + users[i].name + ' ');
         }
       }
     }
