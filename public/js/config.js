@@ -227,10 +227,10 @@ var memeTemplate = Handlebars.compile('\
     <div class="meme">\
       <div class="top">{{top}}</div>\
       <div class="bottom">{{bottom}}</div>\
-      <img src="{{pic}}"\
+      <a href="{{pic}}" target="_blank"><img src="{{pic}}"\
         onload="var width = $(this).width(); $(this).parent().parent().find(\'div\').width(width);"\
         onerror="$(this).parent().parent().hide(\'normal\');"\
-      >\
+      ></a>\
     </div>\
     <span class="glyphicon glyphicon-remove close"></span>\
   </div>\
