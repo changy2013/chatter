@@ -158,15 +158,19 @@ messageInput.keydown(function(event) {
       }
     }
     return false;
-  }
-  if (event.which == 13) {
+  } else if (event.which == 13) {
     if (event.shiftKey) {
       return;
     }
     if (!messageInput.val()) {
       return;
     }
-    socket.emit('message', messageInput.val());
+    var text = messageInput.val();
+    if (text == '/clear') {
+      messageContainer.html('');
+    } else {
+      socket.emit('message', messageInput.val());
+    }
     messageInput.val('');
     event.preventDefault();
   }
