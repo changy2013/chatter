@@ -182,6 +182,7 @@ messageInput.keydown(function(event) {
 //================================================================================================= SOCKET.IO EVENTS
 
 socket.on('connect', function() {
+  messageContainer.html('');
   console.log('Socket.IO connected :)');
   geolocate(function(location) {
     socket.emit('location', {
