@@ -93,6 +93,9 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('message', function(data) {
+    if (!data || typeof(data) != 'string') {
+      return;
+    }
     var message = {
       user: socket.handshake.session.passport.user,
       date: new Date(),
@@ -105,6 +108,9 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('title', function(data) {
+    if (!data || typeof(data) != 'string') {
+      return;
+    }
     var title = {
       user: socket.handshake.session.passport.user,
       date: new Date(),
@@ -127,7 +133,10 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('location', function(data) {
-    users[socket.id].location = data.location.replace(htmlTagPattern, '');
+    if (!data || typeof(data) != 'string') {
+      return;
+    }
+    users[socket.id].location = data.replace(htmlTagPattern, '');
     io.sockets.emit('users', users);
   });
 

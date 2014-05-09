@@ -185,9 +185,7 @@ socket.on('connect', function() {
   messageContainer.html('');
   console.log('Socket.IO connected :)');
   geolocate(function(location) {
-    socket.emit('location', {
-      location: location,
-    });
+    socket.emit('location', location);
   });
 });
 
