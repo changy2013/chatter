@@ -61,7 +61,7 @@ var users = {};
 
 io.sockets.on('connection', function(socket) {
 
-  users[socket.handshake.session.passport.user.id] = {
+  users[socket.id] = {
     name: socket.handshake.session.passport.user.name,
     pic: socket.handshake.session.passport.user.pic,
     date: new Date(),
@@ -87,7 +87,7 @@ io.sockets.on('connection', function(socket) {
   socket.broadcast.emit('system-message', { text: socket.handshake.session.passport.user.name + ' connected' });
 
   socket.on('disconnect', function() {
-    delete users[socket.handshake.session.passport.user.id];
+    delete users[socket.id];
     io.sockets.emit('users', users);
     io.sockets.emit('system-message', { text: socket.handshake.session.passport.user.name + ' disconnected' });
   });
@@ -118,7 +118,7 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('ping', function(data) {
-    users[socket.handshake.session.passport.user.id].date = new Date();
+    users[socket.id].date = new Date();
     if (data) {
       if (data.triggerUpdate) {
         io.sockets.emit('users', users);
@@ -127,7 +127,7 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('location', function(data) {
-    users[socket.handshake.session.passport.user.id].location = data.location.replace(htmlTagPattern, '');
+    users[socket.id].location = data.location.replace(htmlTagPattern, '');
     io.sockets.emit('users', users);
   });
 
