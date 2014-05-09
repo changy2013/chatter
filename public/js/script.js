@@ -100,7 +100,10 @@ function appendPics(urls) {
 
 function scroll() {
   if (windowHasFocus) {
-    messageContainer.scrollTop(messageContainer.prop('scrollHeight'));
+    if (messageContainer.prop('scrollHeight') - messageContainer.scrollTop() - messageContainer.outerHeight() < 333) {
+      messageContainer.scrollTop(messageContainer.prop('scrollHeight'));
+      messageContainer.stop(true, true).animate({scrollTop: messageContainer.prop('scrollHeight') + 666}, 333);
+    }
   } else {
     unreadMessageCount += 1;
     document.title = '(' + unreadMessageCount + ') ' + windowTitle;

@@ -218,6 +218,7 @@ var picsTemplate = Handlebars.compile('\
     <div>\
       {{#each pics}}\
         <a href="{{this}}" target="_blank"><img src="{{this}}"\
+          onload="scroll();"\
           onerror="$(this).parent().parent().parent().remove();"\
         ></a>\
       {{/each}}\
@@ -232,7 +233,7 @@ var memeTemplate = Handlebars.compile('\
       <div class="top">{{top}}</div>\
       <div class="bottom">{{bottom}}</div>\
       <a href="{{pic}}" target="_blank"><img src="{{pic}}"\
-        onload="var width = $(this).width(); $(this).parent().parent().find(\'div\').width(width);"\
+        onload="var width = $(this).width(); $(this).parent().parent().find(\'div\').width(width); scroll();"\
         onerror="$(this).parent().parent().hide(\'normal\');"\
       ></a>\
     </div>\
