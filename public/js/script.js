@@ -28,11 +28,13 @@ if (!cssSupport('height', 'calc(25px)')) {
   console.log('CSS calc not supported, using JavaScript fallback.');
 }
 
-//================================================================================================= CLOSE BUTTONS + FOCUS MESSAGE INPUT
+//================================================================================================= CLOSE BUTTONS + TITLE MAX LENGTH + FOCUS MESSAGE INPUT
 
 $(document).on('click', '.media .close', function() {
   $(this).parent().hide('normal');
 });
+
+$('#modal-title input').prop('maxlength', titleMaxLength);
 
 messageInput.focus();
 
