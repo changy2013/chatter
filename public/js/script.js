@@ -248,7 +248,7 @@ socket.on('users', function(data) {
     return b.timestamp - a.timestamp;
   });
   $('.navbar-collapse ul .user').remove();
-  $('.navbar-collapse ul').first().prepend(navbarUsersTemplate({
+  $('.navbar-collapse li').first().after(navbarUsersTemplate({
     users: users,
   }));
   $('#user-container').html(sidebarUsersTemplate({
