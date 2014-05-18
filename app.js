@@ -154,7 +154,7 @@ var cookieParser = express.cookieParser(config.app.secret);
 app.set('port', config.app.port);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hjs');
-app.use(express.favicon());
+app.use(express.favicon(path.join(__dirname, 'public/img/icon.png')));
 app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
