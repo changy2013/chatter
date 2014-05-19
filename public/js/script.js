@@ -100,13 +100,14 @@ function appendPics(urls) {
   }
 }
 
-function scroll() {
+function scroll(count) {
+  count = typeof(count) != 'undefined' ? count : true;
   if (windowHasFocus) {
     if (messageContainer.prop('scrollHeight') - messageContainer.scrollTop() - messageContainer.outerHeight() < 333) {
       messageContainer.scrollTop(messageContainer.prop('scrollHeight'));
       messageContainer.stop(true, true).animate({scrollTop: messageContainer.prop('scrollHeight') + 666}, 333);
     }
-  } else {
+  } else if (count) {
     unreadMessageCount += 1;
     document.title = '(' + unreadMessageCount + ') ' + windowTitle;
   }
@@ -211,7 +212,7 @@ socket.on('error', function(reason) {
 
 socket.on('system-message', function(data) {
   messageContainer.append(systemMessageTemplate(data));
-  scroll();
+  scroll(false);
 });
 
 //===============================================
